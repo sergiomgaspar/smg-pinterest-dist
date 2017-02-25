@@ -19,5 +19,10 @@ var PicturesSchema = new _mongoose2.default.Schema({
   likes: []
 });
 
+/* Search pictures by ID of owner */
+PicturesSchema.methods.findByUser = function (cb) {
+  return this.model('Pictures').find({ userId: this.userId }, cb);
+};
+
 exports.default = _mongoose2.default.model('Pictures', PicturesSchema);
 //# sourceMappingURL=pictures.model.js.map

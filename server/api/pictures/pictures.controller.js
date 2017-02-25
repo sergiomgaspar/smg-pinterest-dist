@@ -14,10 +14,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
@@ -93,13 +89,16 @@ function index(req, res) {
   return _pictures2.default.find().exec().then(respondWithResult(res)).catch(handleError(res));
 }
 
-// Gets a single Pictures from the DB
+// Gets Pictures by user
 function show(req, res) {
-  return _pictures2.default.findById(req.params.id).exec().then(handleEntityNotFound(res)).then(respondWithResult(res)).catch(handleError(res));
+  var pictures = new _pictures2.default({ userId: req.params.id });
+
+  return pictures.findByUser().lean().exec().then(handleEntityNotFound(res)).then(respondWithResult(res)).catch(handleError(res));
 }
 
 // Creates a new Pictures in the DB
 function create(req, res) {
+
   return _pictures2.default.create(req.body).then(respondWithResult(res, 201)).catch(handleError(res));
 }
 
@@ -108,11 +107,11 @@ function upsert(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  console.log("RECEIVED REQUEST TO UPDATE PIC");
-  console.log("PARAM_ID: " + req.params.id);
-  console.log("req.body.countLike: " + req.body.countLike);
-  console.log("req.body.likes: " + req.body.likes);
-  console.log("BODY:", (0, _stringify2.default)(req.body, undefined, 2));
+  /*console.log("RECEIVED REQUEST TO UPDATE PIC");  
+  console.log("PARAM_ID: "+ req.params.id);
+  console.log("req.body.countLike: "+req.body.countLike);
+  console.log("req.body.likes: "+req.body.likes);
+  console.log("BODY:",JSON.stringify(req.body, undefined, 2));*/
   return _pictures2.default.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true }).exec().then(respondWithResult(res)).catch(handleError(res));
 }
 
